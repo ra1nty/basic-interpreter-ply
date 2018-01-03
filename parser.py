@@ -80,3 +80,191 @@ def p_command_read(p):
 def p_command_read_bad(p):
     '''command : READ error'''
     p[0] = "MALFORMED VARIABLE LIST IN READ"
+
+# DATA statement
+
+
+def p_command_data(p):
+    '''command : DATA numlist'''
+    p[0] = ('DATA', p[2])
+
+
+def p_command_data_bad(p):
+    '''command : DATA error'''
+    p[0] = "MALFORMED NUMBER LIST IN DATA"
+
+# PRINT statement
+
+
+def p_command_print(p):
+    '''command : PRINT plist optend'''
+    p[0] = ('PRINT', p[2], p[3])
+
+
+def p_command_print_bad(p):
+    '''command : PRINT error'''
+    p[0] = "MALFORMED PRINT STATEMENT"
+
+# Optional ending on PRINT. Either a comma (,) or semicolon (;)
+
+
+def p_optend(p):
+    '''optend : COMMA 
+              | SEMI
+              |'''
+    if len(p) == 2:
+        p[0] = p[1]
+    else:
+        p[0] = None
+
+# PRINT statement with no arguments
+
+
+def p_command_print_empty(p):
+    '''command : PRINT'''
+    p[0] = ('PRINT', [], None)
+
+# GOTO statement
+
+
+def p_command_goto(p):
+    '''command : GOTO INTEGER'''
+    p[0] = ('GOTO', int(p[2]))
+
+
+def p_command_goto_bad(p):
+    '''command : GOTO error'''
+    p[0] = "INVALID LINE NUMBER IN GOTO"
+
+# IF-THEN statement
+
+
+def p_command_if(p):
+    '''command : IF relexpr THEN INTEGER'''
+    p[0] = ('IF', p[2], int(p[4]))
+
+
+def p_command_if_bad(p):
+    '''command : IF error THEN INTEGER'''
+    p[0] = "BAD RELATIONAL EXPRESSION"
+
+
+def p_command_if_bad2(p):
+    '''command : IF relexpr THEN error'''
+    p[0] = "INVALID LINE NUMBER IN THEN"
+
+# FOR statement
+
+
+def p_command_for(p):
+    '''command : FOR ID EQUALS expr TO expr optstep'''
+    p[0] = ('FOR', p[2], p[4], p[6], p[7])
+
+
+def p_command_for_bad_initial(p):
+    '''command : FOR ID EQUALS error TO expr optstep'''
+    p[0] = "BAD INITIAL VALUE IN FOR STATEMENT"
+
+
+def p_command_for_bad_final(p):
+    '''command : FOR ID EQUALS expr TO error optstep'''
+    p[0] = "BAD FINAL VALUE IN FOR STATEMENT"
+
+
+def p_command_for_bad_step(p):
+    '''command : FOR ID EQUALS expr TO expr STEP error'''
+    p[0] = "MALFORMED STEP IN FOR STATEMENT"
+
+# Optional STEP qualifier on FOR statement
+
+
+def p_optstep(p):
+    '''optstep : STEP expr
+               | empty'''
+    if len(p) == 3:
+        p[0] = p[2]
+    else:
+        p[0] = None
+
+# NEXT statement
+
+
+def p_command_next(p):
+    '''command : NEXT ID'''
+
+    p[0] = ('NEXT', p[2])
+
+
+def p_command_next_bad(p):
+    '''command : NEXT error'''
+    p[0] = "MALFORMED NEXT"
+
+# END statement
+
+
+def p_command_end(p):
+    '''command : END'''
+    p[0] = ('END',)
+
+# REM statement
+
+
+def p_command_rem(p):
+    '''command : REM'''
+    p[0] = ('REM', p[1])
+
+# STOP statement
+
+
+def p_command_stop(p):
+    '''command : STOP'''
+    p[0] = ('STOP',)
+
+# DEF statement
+
+
+def p_command_def(p):
+    '''command : DEF ID LPAREN ID RPAREN EQUALS expr'''
+    p[0] = ('FUNC', p[2], p[4], p[7])
+
+
+def p_command_def_bad_rhs(p):
+    '''command : DEF ID LPAREN ID RPAREN EQUALS error'''
+    p[0] = "BAD EXPRESSION IN DEF STATEMENT"
+
+
+def p_command_def_bad_arg(p):
+    '''command : DEF ID LPAREN error RPAREN EQUALS expr'''
+    p[0] = "BAD ARGUMENT IN DEF STATEMENT"
+
+# GOSUB statement
+
+
+def p_command_gosub(p):
+    '''command : GOSUB INTEGER'''
+    p[0] = ('GOSUB', int(p[2]))
+
+
+def p_command_gosub_bad(p):
+    '''command : GOSUB error'''
+    p[0] = "INVALID LINE NUMBER IN GOSUB"
+
+# RETURN statement
+
+
+def p_command_return(p):
+    '''command : RETURN'''
+    p[0] = ('RETURN',)
+
+# DIM statement
+
+
+def p_command_dim(p):
+    '''command : DIM dimlist'''
+    p[0] = ('DIM', p[2])
+
+
+def p_command_dim_bad(p):
+    '''command : DIM error'''
+    p[0] = "MALFORMED VARIABLE LIST IN DIM"
+
